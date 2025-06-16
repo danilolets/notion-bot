@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
 
-const VERIFY_TOKEN = 'danilo1973'; // Você pode alterar esse token
+const VERIFY_TOKEN = 'danilo1973';
 
 app.use(express.json());
 
-// Rota de verificação do webhook
+// Verificação do webhook (GET)
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -19,16 +19,18 @@ app.get('/webhook', (req, res) => {
     } else {
       res.sendStatus(403);
     }
+  } else {
+    // Se acessar no navegador sem parâmetros, responde isso:
+    res.status(200).send('Webhook endpoint is live ✅');
   }
 });
 
-// Rota para receber mensagens
+// Recebimento de mensagens (POST)
 app.post('/webhook', (req, res) => {
-  console.log('Incoming webhook:', JSON.stringify(req.body, null, 2));
+  console.log('Incoming webhook: ', JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
 });
 
-// Inicializa o servidor
 app.listen(port, () => {
   console.log(`Webhook server is listening on port ${port}`);
 });
